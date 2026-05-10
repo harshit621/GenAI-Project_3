@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NotebookLM — RAG Document Chat</title>
+  <meta name="description" content="Upload any PDF or text file and have an AI-powered conversation grounded entirely in your document's content." />
+  <!-- System font (SF Pro) used — no external font load needed -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Background ─────────────────────────────────────────────── -->
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- ── App Shell ──────────────────────────────────────────────── -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">◼︎</span>
+        <span class="logo-text">NotebookLM</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    </div>
+
+    <!-- Upload panel -->
+    <section class="upload-section" aria-labelledby="upload-heading">
+      <h2 id="upload-heading" class="section-label">Upload Document</h2>
+
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-describedby="upload-hint">
+        <div class="upload-icon">📄</div>
+        <p class="upload-primary">Drop a file here</p>
+        <p class="upload-secondary" id="upload-hint">PDF or TXT · Max 50 MB</p>
+        <input type="file" id="fileInput" accept=".pdf,.txt" hidden />
+        <button class="btn btn-outline" id="browseBtn">Browse file</button>
+      </div>
+
+      <div class="upload-progress hidden" id="uploadProgress">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <p class="progress-label" id="progressLabel">Uploading…</p>
+      </div>
+    </section>
+
+    <!-- Documents list -->
+    <section class="docs-section" aria-labelledby="docs-heading">
+      <h2 id="docs-heading" class="section-label">Your Documents</h2>
+      <ul class="doc-list" id="docList" role="listbox" aria-label="Indexed documents">
+        <li class="doc-empty">No documents yet</li>
+      </ul>
+    </section>
+
+    <footer class="sidebar-footer">
+      <p>Powered by <strong>Groq</strong> · <strong>Qdrant</strong></p>
+    </footer>
+  </aside>
+
+  <!-- Main Chat Area -->
+  <main class="chat-area" id="chatArea">
+
+    <!-- Toolbar -->
+    <header class="chat-toolbar">
+      <button class="icon-btn" id="menuBtn" aria-label="Open sidebar">☰</button>
+      <div class="active-doc-pill" id="activeDocPill">
+        <span class="pill-icon">📄</span>
+        <span id="activeDocName">No document selected</span>
+      </div>
+      <button class="icon-btn" id="clearBtn" title="Clear conversation" aria-label="Clear conversation">🗑</button>
+    </header>
+
+    <!-- Messages -->
+    <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Conversation">
+
+      <!-- Welcome state -->
+      <div class="welcome-state" id="welcomeState">
+        <div class="welcome-icon">🤖</div>
+        <h1 class="welcome-title">Chat with your documents</h1>
+        <p class="welcome-sub">Upload a PDF or text file on the left, then ask anything about it.</p>
+        <div class="feature-pills">
+          <span class="feature-pill">📑 PDF &amp; TXT</span>
+          <span class="feature-pill">🔍 Semantic Search</span>
+          <span class="feature-pill">⚡ Groq LLM</span>
+          <span class="feature-pill">🗄 Qdrant Vector DB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="input-bar">
+      <div class="input-wrapper">
+        <textarea
+          id="queryInput"
+          class="query-input"
+          placeholder="Ask something about your document…"
+          rows="1"
+          aria-label="Your question"
+          disabled
+        ></textarea>
+        <button class="send-btn" id="sendBtn" aria-label="Send question" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">Answers are grounded in the document — not generated from memory.</p>
+    </div>
+
+  </main>
+</div>
+
+<!-- Sources modal -->
+<div class="modal-overlay hidden" id="sourcesModal" role="dialog" aria-modal="true" aria-labelledby="sources-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="sources-title">Retrieved Sources</h3>
+      <button class="icon-btn" id="closeModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="sourcesBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

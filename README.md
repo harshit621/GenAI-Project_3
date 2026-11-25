@@ -176,14 +176,4 @@ Temperature is set to `0.2` for maximum factual accuracy.
 
 ---
 
-## 📊 Marking Criteria Coverage
 
-| Criterion | Implementation |
-|-----------|---------------|
-| RAG Pipeline | `rag.js` orchestrates all 4 steps |
-| Chunking | Recursive char splitter in `chunker.js` |
-| Embedding | Local MiniLM via `@xenova/transformers` |
-| Vector DB | Qdrant with cosine similarity |
-| Groq LLM | `llama-3.1-8b-instant` with context injection |
-| Answer Quality | System prompt enforces document-only answers |
-| Web UI | Full chat interface in `public/` |
